@@ -135,10 +135,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Log.usage.info("codex profiles: \(self.codexProfiles.map(\.displayPath).joined(separator: ", "), privacy: .public)")
             let claudeProviders = claudeProfiles.map { ClaudeOAuthProvider(profile: $0) }
             self.claudeProviders = claudeProviders
-            let allProviders: [UsageProvider] = claudeProviders
-                + [CursorLocalProvider()]
-                + codexProfiles.map { CodexLocalProvider(profile: $0) }
-                + [AntigravityProvider(),
+            var allProviders: [UsageProvider] = claudeProviders
+            allProviders.append(CursorLocalProvider())
+            allProviders.append(contentsOf: codexProfiles.map { CodexLocalProvider(profile: $0) })
+            allProviders.append(contentsOf: PiUsageProvider.Service.allCases.map { PiUsageProvider(service: $0) })
+            let additionalProviders: [UsageProvider] = [AntigravityProvider(),
                    GLMProvider(), MiniMaxProvider(web: miniMaxWeb), GrokLocalProvider(), DevinLocalProvider(), OpenCodeProvider(),
                    CommandCodeProvider(), GitHubCopilotProvider(), KimiProvider(), KiroProvider(),
                    OllamaLocalProvider(endpoint: URL(string: preferences.ollamaEndpoint)!),
@@ -150,7 +151,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                    GeminiAPIProvider(budget: {
                        Preferences.storedGeminiAPIMonthlyTokenBudget()
                    })]
-                + webProviders
+            allProviders.append(contentsOf: additionalProviders)
+            allProviders.append(contentsOf: webProviders)
             preferences.reconcile(discoveredIDs: allProviders.map(\.id))
             let store = UsageStore(
                 providers: allProviders,

@@ -268,6 +268,28 @@ and installs in the background without prompting; Settings says so and can
 switch it off. Every update is EdDSA-signed, so nothing installs that wasn't
 built and signed by the maintainer.
 
+## Pi support (macOS)
+
+Enable **Pi · Claude** and/or **Pi · Codex** in Settings → Providers. Sign in
+using `/login` in Pi first. Each entry reads that provider's OAuth account from
+`~/.pi/agent/auth.json`, independently of any Claude Code or Codex login.
+`PI_CODING_AGENT_DIR` (or legacy `PI_AGENT_DIR`) overrides the directory; when
+neither is set and the default store is absent, `~/.pi/auth.json` is also accepted.
+Environment overrides must be present in the app's launch environment.
+
+Before each usage fetch, Codenotch runs
+`pi auth check --provider anthropic --json` (or `openai-codex`) and rereads the
+store. **Only Pi refreshes and writes tokens**; Codenotch never redeems refresh
+tokens itself or requests credentials on CLI stdout. Checks time out after 20
+seconds and failed checks have a cooldown. Install a Pi version supporting
+`pi auth check`; an unavailable/older CLI leaves the reading stale rather than
+silently bypassing the freshness check.
+
+These are provider-reported **account-wide subscription limits**, not Pi-only
+spend or session activity. API-key entries and other Pi providers are not yet
+supported. No credentials belong in this repository. Build locally using the
+instructions below; upstream downloads do not contain this feature.
+
 ## Building
 
 ```sh

@@ -1,6 +1,17 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Sign in using /login in Pi. Codenotch reads Pi's auth.json and runs pi auth check to keep tokens fresh.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in using /login in Pi. Codenotch reads Pi's auth.json and runs pi auth check to keep tokens fresh."
+          }
+        }
+      }
+    },
     "just now": {
       "extractionState": "manual",
       "localizations": {
